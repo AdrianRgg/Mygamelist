@@ -19,7 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:4200'],
+    'allowed_origins' => [
+    'https://adrianrgg.github.io', // tu dominio de GitHub Pages
+],
 
     'allowed_origins_patterns' => [],
 
