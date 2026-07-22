@@ -1,0 +1,141 @@
+<div class="max-w-5xl mx-auto px-6 py-8">
+  @if (loading) {
+    <div class="flex justify-center py-20">
+      <p class="text-gray-400">Cargando...</p>
+    </div>
+  }
+
+  @if (error) {
+    <p class="text-red-400 text-center py-20">{{ error }}</p>
+  }
+
+  @if (profile && !loading) {
+
+    <!-- PERFIL -->
+    <div class="flex flex-col sm:flex-row items-center gap-6 mb-10 bg-gray-900 rounded-2xl p-6 border border-gray-800">
+      <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center flex-shrink-0">
+        @if (profile.user.avatar_url) {
+          <img [src]="profile.user.avatar_url" class="w-full h-full object-cover" />
+        } @else {
+          <span class="text-4xl">👤</span>
+        }
+      </div>
+
+      <div class="flex-1 text-center sm:text-left">
+        <h1 class="text-2xl font-bold text-white">{{ profile.user.name }}</h1>
+        <p class="text-gray-400 text-sm mt-1">{{ profile.games.length }} juegos en la lista</p>
+      </div>
+
+      @if (profile.games.length > 0) {
+        <div class="flex items-center gap-6">
+          <div class="relative w-28 h-28">
+            <svg viewBox="0 0 36 36" class="w-28 h-28 -rotate-90">
+              @for (segment of donutSegments; track segment.status) {
+                <circle cx="18" cy="18" r="15.9" fill="none"
+                  [attr.stroke]="segment.color" stroke-width="3.5"
+                  [attr.stroke-dasharray]="segment.dashArray"
+                  [attr.stroke-dashoffset]="segment.dashOffset" />
+              }
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-white font-bold text-lg">{{ profile.games.length }}</span>
+              <span class="text-gray-400 text-xs">juegos</span>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            @for (segment of donutSegments; track segment.status) {
+              @if (segment.count > 0) {
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full" [style.background]="segment.color"></div>
+                  <span class="text-gray-300 text-xs">{{ segment.label }}</span>
+                  <span class="text-gray-500 text-xs ml-2">{{ segment.count }} ({{ segment.percent }}%)</span>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- JUEGOS -->
+    @if (profile.games.length > 0) {
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <h2 class="text-xl font-bold text-white">Lista de juegos</h2>
+        <button
+          (click)="toggleSort()"
+          class="text-sm border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors">
+          {{ sortOrder === 'desc' ? '↓ Mayor valoración' : '↑ Menor valoración' }}
+        </button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="flex gap-2 mb-5 flex-wrap">
+        @for (f of filters; track f.value) {
+          <button
+            (click)="setFilter(f.value)"
+            [class]="filter === f.value
+              ? 'bg-violet-600 text-white border-violet-600'
+              : 'bg-transparent text-gray-400 border-gray-700 hover:border-gray-500 hover:text-white'"
+            class="border px-4 py-1.5 rounded-full text-sm transition-colors">
+            {{ f.label }}
+          </button>
+        }
+      </div>
+
+      @if (filteredGames.length === 0) {
+        <p class="text-gray-500 italic text-center py-10">No hay juegos en esta categoría.</p>
+      }
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-10">
+        @for (game of filteredGames; track game.id) {
+          <a [routerLink]="['/games', game.game_igdb_id]"
+             class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-violet-500 hover:-translate-y-1 transition-all duration-200 block">
+            <img [src]="game.game_cover || 'assets/no-cover.png'" [alt]="game.game_name"
+                 class="w-full aspect-[3/4] object-cover" />
+            <div class="p-3">
+              <h3 class="text-white text-sm font-medium leading-tight mb-1 line-clamp-2">{{ game.game_name }}</h3>
+              <p class="text-xs text-gray-400 mb-1">{{ statusLabels[game.status] }}</p>
+              @if (game.rating) {
+                <div class="flex gap-0.5">
+                  @for (filled of getStarArray(game.rating); track $index) {
+                    <span class="text-xs">{{ filled ? '⭐' : '☆' }}</span>
+                  }
+                </div>
+              } @else {
+                <p class="text-gray-600 text-xs">Sin valorar</p>
+              }
+            </div>
+          </a>
+        }
+      </div>
+    }
+
+    <!-- RESEÑAS -->
+    @if (profile.reviews.length > 0) {
+      <h2 class="text-xl font-bold text-white mb-4">Reseñas</h2>
+      <div class="space-y-3">
+        @for (review of profile.reviews; track review.id) {
+          <a [routerLink]="['/games', review.game_igdb_id]"
+             class="bg-gray-800 rounded-xl p-5 border border-gray-700 hover:border-violet-500 transition-colors flex gap-4 items-start block">
+            @if (profile.user.avatar_url) {
+              <img [src]="profile.user.avatar_url"
+                   class="w-9 h-9 rounded-full object-cover flex-shrink-0 mt-0.5" />
+            } @else {
+              <div class="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="text-sm">👤</span>
+              </div>
+            }
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-3 mb-1 flex-wrap">
+                <span class="text-white font-semibold text-sm">{{ review.game_name }}</span>
+                <span class="text-yellow-400 text-sm">⭐ {{ review.rating }}/10</span>
+                <span class="text-gray-500 text-xs ml-auto">{{ review.created_at | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <p class="text-gray-300 text-sm leading-relaxed">{{ review.body }}</p>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  }
+</div>

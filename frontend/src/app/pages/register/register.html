@@ -1,0 +1,127 @@
+<div class="min-h-screen bg-gray-950 flex">
+
+  <!-- LADO IZQUIERDO -->
+  <div class="hidden lg:flex flex-1 flex-col items-center justify-center px-12 relative overflow-hidden">
+
+    <!-- Fondo animado -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute w-96 h-96 bg-violet-600/10 rounded-full blur-3xl -top-20 -left-20 animate-pulse"></div>
+      <div class="absolute w-80 h-80 bg-violet-500/10 rounded-full blur-3xl bottom-10 right-10 animate-pulse" style="animation-delay: 1s"></div>
+      <div class="absolute w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl top-1/2 left-1/2 animate-pulse" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="relative z-10 text-center max-w-lg">
+      <div class="text-6xl mb-6 animate-bounce">🎮</div>
+
+      <h1 class="text-5xl font-black text-white leading-tight mb-4 tracking-tight">
+        Tu diario de
+        <span class="block text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">
+          videojuegos
+        </span>
+      </h1>
+
+      <p class="text-gray-400 text-lg mb-10 leading-relaxed">
+        Lleva el control de todo lo que juegas, descubre nuevos títulos y comparte tu experiencia con amigos.
+      </p>
+
+      <div class="flex flex-col gap-3 text-left">
+        <div class="flex items-center gap-3 bg-gray-900/60 backdrop-blur rounded-xl px-4 py-3 border border-gray-800">
+          <span class="text-2xl">📋</span>
+          <div>
+            <p class="text-white text-sm font-semibold">Organiza tu biblioteca</p>
+            <p class="text-gray-500 text-xs">Jugando, terminado, pendiente o abandonado</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-gray-900/60 backdrop-blur rounded-xl px-4 py-3 border border-gray-800">
+          <span class="text-2xl">⭐</span>
+          <div>
+            <p class="text-white text-sm font-semibold">Puntúa y reseña</p>
+            <p class="text-gray-500 text-xs">Comparte tu opinión sobre cada juego</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-gray-900/60 backdrop-blur rounded-xl px-4 py-3 border border-gray-800">
+          <span class="text-2xl">👥</span>
+          <div>
+            <p class="text-white text-sm font-semibold">Conecta con amigos</p>
+            <p class="text-gray-500 text-xs">Mira qué están jugando y descubre títulos nuevos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LADO DERECHO — Formulario -->
+  <div class="w-full lg:w-[480px] flex items-center justify-center px-8 bg-gray-900 border-l border-gray-800">
+    <div class="w-full max-w-sm">
+
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-white mb-1">Crear cuenta</h2>
+        <p class="text-gray-400 text-sm">Únete y empieza a trackear tus juegos</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="space-y-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Nombre</label>
+          <input
+            type="text"
+            [(ngModel)]="name"
+            name="name"
+            required
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-violet-500 transition-colors"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Email</label>
+          <input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            required
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-violet-500 transition-colors"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Contraseña</label>
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            required
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-violet-500 transition-colors"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Confirmar contraseña</label>
+          <input
+            type="password"
+            [(ngModel)]="password_confirmation"
+            name="password_confirmation"
+            required
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-violet-500 transition-colors"
+          />
+        </div>
+
+        @if (error) {
+          <p class="text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">{{ error }}</p>
+        }
+
+        <button
+          type="submit"
+          [disabled]="loading"
+          class="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors">
+          {{ loading ? 'Registrando...' : 'Crear cuenta' }}
+        </button>
+      </form>
+
+      <p class="text-center text-gray-500 text-sm mt-6">
+        ¿Ya tienes cuenta?
+        <a routerLink="/login" class="text-violet-400 hover:text-violet-300 transition-colors">Inicia sesión</a>
+      </p>
+    </div>
+  </div>
+
+</div>

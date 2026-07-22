@@ -1,0 +1,10 @@
+/node_modules
+/dist
+/.angular/cache
+/tmp
+/out-tsc
+/bazel-out
+.env
+*.log
+/.vscode
+/.idea

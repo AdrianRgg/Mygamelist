@@ -1,0 +1,152 @@
+<div class="w-full px-6 py-8">
+  <!-- BUSCADOR -->
+  <div class="relative mb-8">
+    <input
+      type="text"
+      [(ngModel)]="query"
+      (ngModelChange)="onSearch()"
+      placeholder="Busca un juego..."
+      class="w-full bg-gray-800 text-white border border-gray-700 rounded-xl px-5 py-3 text-lg focus:outline-none focus:border-violet-500 placeholder-gray-500 pr-10"
+    />
+    @if (query) {
+      <button
+        (click)="clearSearch()"
+        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors">
+        ✕
+      </button>
+    }
+  </div>
+
+  <!-- RESULTADOS DE BÚSQUEDA -->
+  @if (query) {
+    @if (loading) {
+      <div class="flex justify-center py-20">
+        <p class="text-gray-400">Buscando...</p>
+      </div>
+    }
+
+    @if (searched && !loading && games.length === 0) {
+      <p class="text-gray-500 text-center py-20">No se encontraron juegos.</p>
+    }
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-10 gap-4">
+      @for (game of games; track game.id) {
+        <app-game-card [game]="game" />
+      }
+    </div>
+
+    @if (hasMore && !loading) {
+      <div class="flex justify-center mt-10">
+        <button
+          (click)="loadMore()"
+          [disabled]="loadingMore"
+          class="bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white border border-gray-700 px-8 py-3 rounded-xl transition-colors">
+          {{ loadingMore ? 'Cargando...' : 'Cargar más juegos' }}
+        </button>
+      </div>
+    }
+  }
+
+<!-- HOME -->
+@if (!query && homeData) {
+<div class="grid gap-6 items-start" style="grid-template-columns: 1fr 1fr 320px">
+    <!-- BLOQUE 1 — Mejor reseñados -->
+<div class="pr-4 border-r border-gray-800">
+  <h2 class="text-lg font-bold text-white mb-4">🏆 Mejor Reseñados </h2>
+  <div class="grid grid-cols-4 gap-2">
+    @for (game of homeData.top_rated; track game.game_igdb_id) {
+      <a [routerLink]="['/games', game.game_igdb_id]"
+         class="bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-violet-500 hover:-translate-y-1 transition-all duration-200 block">
+        <img
+          [src]="game.game_cover || 'assets/no-cover.png'"
+          [alt]="game.game_name"
+          class="w-full aspect-[3/4] object-cover"
+        />
+        <div class="p-1.5">
+          <h3 class="text-white text-xs font-medium leading-tight mb-0.5 line-clamp-1">{{ game.game_name }}</h3>
+          <span class="text-yellow-400 text-xs">⭐ {{ game.avg_rating }}</span>
+        </div>
+      </a>
+    }
+  </div>
+</div>
+
+    <!-- BLOQUE 2 — Más añadidos -->
+<div class="pr-4 border-r border-gray-800">
+  <h2 class="text-lg font-bold text-white mb-4">🔥 Más añadidos</h2>
+  <div class="grid grid-cols-4 gap-2">
+    @for (game of homeData.popular; track game.game_igdb_id) {
+      <a [routerLink]="['/games', game.game_igdb_id]"
+         class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-violet-500 hover:-translate-y-1 transition-all duration-200 block">
+        <img
+          [src]="game.game_cover || 'assets/no-cover.png'"
+          [alt]="game.game_name"
+          class="w-full aspect-[3/4] object-cover"
+        />
+        <div class="p-2">
+          <h3 class="text-white text-xs font-medium leading-tight mb-1 line-clamp-2">{{ game.game_name }}</h3>
+          <span class="text-gray-400 text-xs">{{ game.total }} usuarios</span>
+        </div>
+      </a>
+    }
+  </div>
+</div>
+
+    <!-- BLOQUE 3 — Actividad de amigos -->
+    <div>
+      <h2 class="text-lg font-bold text-white mb-4">👥 Actividad de amigos</h2>
+
+      @if (homeData.activity.length === 0) {
+        <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 text-center">
+          <p class="text-gray-400 text-sm mb-1">Sin actividad aún</p>
+          <p class="text-gray-600 text-xs">Añade amigos para ver su actividad.</p>
+        </div>
+      }
+
+      <div class="space-y-3">
+        @for (item of homeData.activity; track $index) {
+          <a [routerLink]="['/games', item.game_igdb_id]"
+             class="flex items-start gap-3 bg-gray-800 rounded-xl p-3 border border-gray-700 hover:border-violet-500 transition-colors block">
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-700 flex-shrink-0 flex items-center justify-center mt-0.5">
+              @if (item.user.avatar_url) {
+                <img [src]="item.user.avatar_url" class="w-full h-full object-cover" />
+              } @else {
+                <span class="text-xs">👤</span>
+              }
+            </div>
+            <img
+              [src]="item.game_cover || 'assets/no-cover.png'"
+              class="w-8 h-12 object-cover rounded flex-shrink-0"
+            />
+            <div class="flex-1 min-w-0">
+              @if (item.type === 'game_added') {
+                <p class="text-xs text-gray-300 leading-relaxed">
+                  <span class="text-white font-semibold">{{ item.user.name }}</span>
+                  {{ statusLabels[item.status!] }}
+                  <span class="text-violet-400 font-medium">{{ item.game_name }}</span>
+                </p>
+              } @else {
+                <p class="text-xs text-gray-300 leading-relaxed">
+                  <span class="text-white font-semibold">{{ item.user.name }}</span>
+                  reseñó
+                  <span class="text-violet-400 font-medium">{{ item.game_name }}</span>
+                  <span class="text-yellow-400 ml-1">⭐ {{ item.rating }}/10</span>
+                </p>
+                <p class="text-gray-500 text-xs mt-0.5 truncate">{{ item.body }}</p>
+              }
+              <p class="text-gray-600 text-xs mt-1">{{ item.created_at | date:'dd/MM/yyyy' }}</p>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+
+  </div>
+}
+  @if (!query && homeLoading) {
+    <div class="flex justify-center py-20">
+      <p class="text-gray-400">Cargando...</p>
+    </div>
+  }
+
+</div>s

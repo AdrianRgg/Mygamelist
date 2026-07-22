@@ -1,0 +1,74 @@
+.my-list-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.filters button {
+  padding: 6px 16px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.filters button.active,
+.filters button:hover {
+  background: #1a1a2e;
+  color: white;
+  border-color: #1a1a2e;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.game-card {
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  display: block;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+}
+
+.game-cover {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+}
+
+.game-info {
+  padding: 8px;
+}
+
+.game-info h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.status {
+  font-size: 11px;
+  color: #666;
+}
+
+.empty {
+  color: #999;
+  font-style: italic;
+}
