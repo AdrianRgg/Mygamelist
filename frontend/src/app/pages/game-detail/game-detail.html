@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto px-6 py-8">
+<div class="max-w-6xl mx-auto px-4 py-6">
   @if (loading) {
     <div class="flex justify-center py-20">
       <p class="text-gray-400">Cargando...</p>
@@ -10,89 +10,89 @@
   }
 
   @if (game && !loading) {
-    <div class="flex gap-8 flex-col md:flex-row">
+    <div class="flex gap-6 flex-col md:flex-row">
 
       <!-- SIDEBAR -->
-      <div class="flex-shrink-0 w-full md:w-56">
-        <img
-          [src]="game.cover || 'assets/no-cover.png'"
-          [alt]="game.name"
-          class="w-full rounded-xl shadow-lg"
-        />
+      <div class="flex-shrink-0 w-full md:w-52">
 
-        <div class="mt-4 space-y-2">
-          @if (userGame) {
-            <p class="text-green-400 text-sm font-medium">{{ statusLabels[userGame.status] }} — en tu lista</p>
-          }
+        <!-- En móvil: portada + panel en horizontal -->
+        <div class="flex gap-4 md:block">
+          <img
+            [src]="game.cover || 'assets/no-cover.png'"
+            [alt]="game.name"
+            class="w-32 md:w-full rounded-xl shadow-lg flex-shrink-0"
+          />
 
-          <select
-            [(ngModel)]="selectedStatus"
-            class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-violet-500">
-            @for (status of statuses; track status) {
-              <option [value]="status">{{ statusLabels[status] }}</option>
+          <div class="mt-0 md:mt-4 space-y-2 flex-1 min-w-0">
+            @if (userGame) {
+              <p class="text-green-400 text-xs sm:text-sm font-medium">{{ statusLabels[userGame.status] }} — en tu lista</p>
             }
-          </select>
 
-          <!-- Rating personal con medias estrellas -->
-          <div>
-            <label class="text-gray-400 text-xs mb-1 block">
-              Tu valoración
-              @if (selectedListRating) {
-                <span class="text-yellow-400">{{ selectedListRating }}/10</span>
+            <select
+              [(ngModel)]="selectedStatus"
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:border-violet-500">
+              @for (status of statuses; track status) {
+                <option [value]="status">{{ statusLabels[status] }}</option>
               }
-            </label>
-            <div class="flex gap-0.5">
-              @for (star of [1,2,3,4,5]; track star) {
-                <div class="relative text-2xl cursor-pointer w-8 h-8"
-                     (mouseleave)="hoverListRating = 0">
-                  <!-- Mitad izquierda → valor impar -->
-                  <div class="absolute left-0 top-0 w-1/2 h-full z-10"
-                       (mouseenter)="hoverListRatingFromStar(star, true)"
-                       (click)="setListRatingFromStar(star, true)">
+            </select>
+
+            <!-- Rating personal con medias estrellas -->
+            <div>
+              <label class="text-gray-400 text-xs mb-1 block">
+                Tu valoración
+                @if (selectedListRating) {
+                  <span class="text-yellow-400">{{ selectedListRating }}/10</span>
+                }
+              </label>
+              <div class="flex gap-0.5">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <div class="relative text-2xl cursor-pointer w-8 h-8"
+                       (mouseleave)="hoverListRating = 0">
+                    <div class="absolute left-0 top-0 w-1/2 h-full z-10"
+                         (mouseenter)="hoverListRatingFromStar(star, true)"
+                         (click)="setListRatingFromStar(star, true)">
+                    </div>
+                    <div class="absolute right-0 top-0 w-1/2 h-full z-10"
+                         (mouseenter)="hoverListRatingFromStar(star, false)"
+                         (click)="setListRatingFromStar(star, false)">
+                    </div>
+                    <span class="absolute inset-0 flex items-center justify-center text-gray-600">☆</span>
+                    @if (getStarFill(star, selectedListRating) === 'full') {
+                      <span class="absolute inset-0 flex items-center justify-center">⭐</span>
+                    } @else if (getStarFill(star, selectedListRating) === 'half') {
+                      <span class="absolute inset-0 flex items-center justify-center"
+                            style="clip-path: inset(0 50% 0 0)">⭐</span>
+                    }
                   </div>
-                  <!-- Mitad derecha → valor par -->
-                  <div class="absolute right-0 top-0 w-1/2 h-full z-10"
-                       (mouseenter)="hoverListRatingFromStar(star, false)"
-                       (click)="setListRatingFromStar(star, false)">
-                  </div>
-                  <!-- Estrella vacía de fondo -->
-                  <span class="absolute inset-0 flex items-center justify-center text-gray-600">☆</span>
-                  <!-- Relleno según valor -->
-                  @if (getStarFill(star, selectedListRating) === 'full') {
-                    <span class="absolute inset-0 flex items-center justify-center">⭐</span>
-                  } @else if (getStarFill(star, selectedListRating) === 'half') {
-                    <span class="absolute inset-0 flex items-center justify-center"
-                          style="clip-path: inset(0 50% 0 0)">⭐</span>
-                  }
-                </div>
-              }
+                }
+              </div>
+              <p class="text-gray-600 text-xs mt-1">½★ = 1pt | ★ = 2pt</p>
             </div>
-            <p class="text-gray-600 text-xs mt-1">½★ = 1pt &nbsp;|&nbsp; ★ = 2pt</p>
-          </div>
 
-          <button
-            (click)="saveToList()"
-            [disabled]="saving"
-            class="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white text-sm font-semibold py-2 rounded-lg transition-colors">
-            {{ userGame ? 'Actualizar' : 'Añadir a mi lista' }}
-          </button>
-
-          @if (userGame) {
             <button
-              (click)="removeFromList()"
+              (click)="saveToList()"
               [disabled]="saving"
-              class="w-full bg-transparent border border-red-700 text-red-400 hover:bg-red-700 hover:text-white text-sm py-2 rounded-lg transition-colors">
-              Quitar de mi lista
+              class="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white text-sm font-semibold py-2 rounded-lg transition-colors">
+              {{ userGame ? 'Actualizar' : 'Añadir a mi lista' }}
             </button>
-          }
+
+            @if (userGame) {
+              <button
+                (click)="removeFromList()"
+                [disabled]="saving"
+                class="w-full bg-transparent border border-red-700 text-red-400 hover:bg-red-700 hover:text-white text-sm py-2 rounded-lg transition-colors">
+                Quitar de mi lista
+              </button>
+            }
+          </div>
         </div>
       </div>
 
       <!-- MAIN -->
       <div class="flex-1 min-w-0">
-        <h1 class="text-4xl font-bold text-white mb-3">{{ game.name }}</h1>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">{{ game.name }}</h1>
 
-        <div class="flex flex-wrap gap-4 mb-4 text-sm">
+        <div class="flex flex-wrap gap-2 sm:gap-4 mb-4 text-sm">
           @if (game.rating) {
             <span class="text-yellow-400 font-semibold">⭐ {{ game.rating }}/10</span>
           }
@@ -106,7 +106,7 @@
             <span class="text-gray-400">📅 {{ game.release_date }}</span>
           }
           @if (game.platforms.length) {
-            <span class="text-gray-400">🎮 {{ game.platforms.join(', ') }}</span>
+            <span class="text-gray-400 line-clamp-1">🎮 {{ game.platforms.slice(0, 3).join(', ') }}</span>
           }
           @if (game.genres.length) {
             <span class="text-gray-400">🏷️ {{ game.genres.join(', ') }}</span>
@@ -114,14 +114,14 @@
         </div>
 
         @if (game.summary) {
-          <p class="text-gray-300 leading-relaxed mb-6">{{ game.summary }}</p>
+          <p class="text-gray-300 leading-relaxed mb-6 text-sm sm:text-base">{{ game.summary }}</p>
         }
 
         <!-- SCREENSHOTS -->
         @if (game.screenshots.length) {
-          <div class="mt-6 mb-8">
-            <h2 class="text-xl font-bold text-white mb-3">Capturas</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div class="mt-4 mb-6">
+            <h2 class="text-lg sm:text-xl font-bold text-white mb-3">Capturas</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
               @for (shot of game.screenshots; track shot) {
                 <img
                   [src]="shot"
@@ -143,25 +143,25 @@
         }
 
         <!-- RESEÑAS -->
-        <div class="mt-8">
-          <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-3">Reseñas</h2>
+        <div class="mt-6">
+          <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 border-b border-gray-700 pb-3">Reseñas</h2>
 
           @if (!myReview) {
-            <div class="bg-gray-800 rounded-xl p-6 mb-6 border border-gray-700">
+            <div class="bg-gray-800 rounded-xl p-4 sm:p-6 mb-6 border border-gray-700">
               <h3 class="text-white font-semibold mb-4">Escribe tu reseña</h3>
 
               <div class="mb-4">
                 <label class="text-gray-400 text-sm mb-2 block">
                   Puntuación: <span class="text-yellow-400 font-bold">{{ newRating }}/10</span>
                 </label>
-                <div class="flex gap-1 items-center">
+                <div class="flex gap-0.5 sm:gap-1 items-center flex-wrap">
                   @for (star of stars; track star) {
                     <button
                       type="button"
                       (click)="setRating(star)"
                       (mouseenter)="hoverRating = star"
                       (mouseleave)="hoverRating = 0"
-                      class="text-2xl transition-transform hover:scale-110 focus:outline-none">
+                      class="text-xl sm:text-2xl transition-transform hover:scale-110 focus:outline-none">
                       {{ (hoverRating || newRating) >= star ? '⭐' : '☆' }}
                     </button>
                   }
@@ -172,7 +172,7 @@
                 [(ngModel)]="newBody"
                 placeholder="Escribe tu reseña (mínimo 10 caracteres)..."
                 rows="4"
-                class="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-violet-500 resize-none placeholder-gray-600"
+                class="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500 resize-none placeholder-gray-600"
               ></textarea>
 
               @if (reviewError) {
@@ -189,46 +189,46 @@
           }
 
           @if (reviews.length === 0) {
-            <p class="text-gray-500 italic">Sé el primero en reseñar este juego.</p>
+            <p class="text-gray-500 italic text-sm">Sé el primero en reseñar este juego.</p>
           }
 
-          <div class="space-y-4">
-  @for (review of reviews; track review.id) {
-    <div class="bg-gray-800 rounded-xl p-5 border"
-         [class]="myReview?.id === review.id ? 'border-violet-500' : 'border-gray-700'">
-      <div class="flex gap-3 mb-3">
+          <div class="space-y-3">
+            @for (review of reviews; track review.id) {
+              <div class="bg-gray-800 rounded-xl p-4 border"
+                   [class]="myReview?.id === review.id ? 'border-violet-500' : 'border-gray-700'">
+                <div class="flex gap-3 mb-2">
 
-        <!-- Avatar -->
-        <div class="flex-shrink-0">
-          @if (review.user.avatar_url) {
-            <img [src]="review.user.avatar_url"
-                 class="w-9 h-9 rounded-full object-cover" />
-          } @else {
-            <div class="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center">
-              <span class="text-sm">👤</span>
-            </div>
-          }
-        </div>
+                  <!-- Avatar -->
+                  <div class="flex-shrink-0">
+                    @if (review.user.avatar_url) {
+                      <img [src]="review.user.avatar_url"
+                           class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover" />
+                    } @else {
+                      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-700 flex items-center justify-center">
+                        <span class="text-sm">👤</span>
+                      </div>
+                    }
+                  </div>
 
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-3 flex-wrap mb-1">
-            <span class="text-white font-semibold text-sm">{{ review.user.name }}</span>
-            <span class="text-yellow-400 text-sm">⭐ {{ review.rating }}/10</span>
-            <span class="text-gray-500 text-xs ml-auto">{{ review.created_at | date:'dd/MM/yyyy' }}</span>
-            @if (myReview?.id === review.id) {
-              <button
-                (click)="deleteReview()"
-                class="text-xs bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-colors">
-                Eliminar
-              </button>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                      <span class="text-white font-semibold text-sm">{{ review.user.name }}</span>
+                      <span class="text-yellow-400 text-sm">⭐ {{ review.rating }}/10</span>
+                      <span class="text-gray-500 text-xs ml-auto">{{ review.created_at | date:'dd/MM/yyyy' }}</span>
+                      @if (myReview?.id === review.id) {
+                        <button
+                          (click)="deleteReview()"
+                          class="text-xs bg-red-700 hover:bg-red-600 text-white px-2 py-1 rounded-lg transition-colors">
+                          Eliminar
+                        </button>
+                      }
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed">{{ review.body }}</p>
+                  </div>
+                </div>
+              </div>
             }
           </div>
-          <p class="text-gray-300 text-sm leading-relaxed">{{ review.body }}</p>
-        </div>
-      </div>
-    </div>
-  }
-</div>
         </div>
       </div>
     </div>

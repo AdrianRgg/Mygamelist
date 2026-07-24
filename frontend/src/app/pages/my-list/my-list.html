@@ -66,7 +66,7 @@
   @if (friends.length > 0) {
     <div class="mb-10">
       <h2 class="text-xl font-bold text-white mb-4">Amigos</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         @for (friend of friends; track friend.friendship_id) {
           <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center gap-3">
             <a [routerLink]="['/profile', friend.id]" class="flex items-center gap-3 flex-1 min-w-0">
@@ -116,7 +116,7 @@
   }
 
   <!-- JUEGOS -->
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
     @for (game of filteredGames; track game.id) {
       <a [routerLink]="['/games', game.game_igdb_id]"
          class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-violet-500 hover:-translate-y-1 transition-all duration-200 block">

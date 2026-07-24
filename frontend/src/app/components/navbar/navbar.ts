@@ -19,6 +19,8 @@ export class NavbarComponent {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  menuOpen = false;
+
   get userName(): string {
     return this.authService.currentUser?.name || '';
   }
@@ -29,11 +31,23 @@ export class NavbarComponent {
 
   logout(): void {
     this.authService.logout();
+    this.menuOpen = false;
+  }
+
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
   }
 
   goRandom(): void {
     this.http.get<{ id: string }>(`${environment.apiUrl}/games/random`).subscribe({
-      next: (res) => this.router.navigate(['/games', res.id]),
+      next: (res) => {
+        this.router.navigate(['/games', res.id]);
+        this.menuOpen = false;
+      },
       error: () => {}
     });
   }
