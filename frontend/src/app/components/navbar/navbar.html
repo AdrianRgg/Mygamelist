@@ -48,7 +48,7 @@
           <a routerLink="/games" routerLinkActive="text-violet-400"
              (click)="closeMenu()"
              class="text-gray-300 hover:text-white text-sm py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors">
-            🔍 Buscar usuarios
+            🔍 Buscar juegos
           </a>
           <a routerLink="/my-list" routerLinkActive="text-violet-400"
              (click)="closeMenu()"
@@ -71,12 +71,4 @@
       </div>
     }
   </nav>
-
-  <!-- Barra de búsqueda de juegos visible en móvil -->
-  <div class="md:hidden px-4 py-2 bg-gray-900 border-b border-gray-800">
-    <a routerLink="/games"
-       class="flex items-center gap-2 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-500 text-sm">
-      🔍 <span>Buscar juegos...</span>
-    </a>
-  </div>
 }
