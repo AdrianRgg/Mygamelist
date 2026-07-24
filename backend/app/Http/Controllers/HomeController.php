@@ -21,7 +21,7 @@ class HomeController extends Controller
             ->groupBy('game_igdb_id', 'game_name')
             ->having('review_count', '>=', 1)
             ->orderByDesc('avg_rating')
-            ->limit(10)
+            ->limit(15)
             ->get()
             ->map(function ($item) {
                 $cover = UserGame::where('game_igdb_id', $item->game_igdb_id)
@@ -58,7 +58,7 @@ class HomeController extends Controller
             $recentGames = UserGame::with('user:id,name,avatar')
                 ->whereIn('user_id', $friendIds)
                 ->orderByDesc('created_at')
-                ->limit(10)
+                ->limit(15)
                 ->get()
                 ->map(fn($ug) => [
                     'type'         => 'game_added',
