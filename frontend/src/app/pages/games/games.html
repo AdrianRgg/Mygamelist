@@ -87,18 +87,16 @@
       </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MÓVIL: bloques apilados con scroll horizontal (MEJORADO)      -->
-    <!-- ============================================================ -->
-    <div class="md:hidden space-y-6 px-4">
+    <!-- MÓVIL: bloques apilados con scroll horizontal -->
+    <div class="md:hidden space-y-8">
 
-      <!-- BLOQUE 1 MÓVIL — Mejor valorados -->
+      <!-- BLOQUE 1 MÓVIL -->
       <div>
         <h2 class="text-base font-bold text-white mb-3">🏆 Mejor valorados</h2>
-        <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar snap-x snap-mandatory -mx-4 px-4">
+        <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           @for (game of homeData.top_rated; track game.game_igdb_id) {
             <a [routerLink]="['/games', game.game_igdb_id]"
-               class="flex-shrink-0 w-24 xs:w-28 snap-start bg-gray-800 rounded-xl overflow-hidden border border-gray-700 active:scale-95 transition-transform block">
+               class="flex-shrink-0 w-28 bg-gray-800 rounded-xl overflow-hidden border border-gray-700 block">
               <img [src]="game.game_cover || 'assets/no-cover.png'" [alt]="game.game_name"
                    class="w-full aspect-[3/4] object-cover"/>
               <div class="p-2">
@@ -110,13 +108,13 @@
         </div>
       </div>
 
-      <!-- BLOQUE 2 MÓVIL — Más añadidos -->
+      <!-- BLOQUE 2 MÓVIL -->
       <div>
         <h2 class="text-base font-bold text-white mb-3">🔥 Más añadidos</h2>
-        <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar snap-x snap-mandatory -mx-4 px-4">
+        <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           @for (game of homeData.popular; track game.game_igdb_id) {
             <a [routerLink]="['/games', game.game_igdb_id]"
-               class="flex-shrink-0 w-24 xs:w-28 snap-start bg-gray-800 rounded-xl overflow-hidden border border-gray-700 active:scale-95 transition-transform block">
+               class="flex-shrink-0 w-28 bg-gray-800 rounded-xl overflow-hidden border border-gray-700 block">
               <img [src]="game.game_cover || 'assets/no-cover.png'" [alt]="game.game_name"
                    class="w-full aspect-[3/4] object-cover"/>
               <div class="p-2">
@@ -128,7 +126,7 @@
         </div>
       </div>
 
-      <!-- BLOQUE 3 MÓVIL — Actividad -->
+      <!-- BLOQUE 3 MÓVIL -->
       <div>
         <h2 class="text-base font-bold text-white mb-3">👥 Actividad de amigos</h2>
         @if (homeData.activity.length === 0) {
@@ -139,7 +137,7 @@
         <div class="space-y-2">
           @for (item of homeData.activity; track $index) {
             <a [routerLink]="['/games', item.game_igdb_id]"
-               class="flex items-start gap-2.5 bg-gray-800 rounded-xl p-2.5 border border-gray-700 active:bg-gray-700 transition-colors block">
+               class="flex items-start gap-3 bg-gray-800 rounded-xl p-3 border border-gray-700 block">
               <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-700 flex-shrink-0 flex items-center justify-center mt-0.5">
                 @if (item.user.avatar_url) {
                   <img [src]="item.user.avatar_url" class="w-full h-full object-cover" />
@@ -150,13 +148,13 @@
               <img [src]="item.game_cover || 'assets/no-cover.png'" class="w-8 h-12 object-cover rounded flex-shrink-0"/>
               <div class="flex-1 min-w-0">
                 @if (item.type === 'game_added') {
-                  <p class="text-xs text-gray-300 leading-snug break-words">
+                  <p class="text-xs text-gray-300 leading-snug">
                     <span class="text-white font-semibold">{{ item.user.name }}</span>
                     {{ statusLabels[item.status!] }}
                     <span class="text-violet-400 font-medium">{{ item.game_name }}</span>
                   </p>
                 } @else {
-                  <p class="text-xs text-gray-300 leading-snug break-words">
+                  <p class="text-xs text-gray-300 leading-snug">
                     <span class="text-white font-semibold">{{ item.user.name }}</span>
                     reseñó
                     <span class="text-violet-400 font-medium">{{ item.game_name }}</span>
