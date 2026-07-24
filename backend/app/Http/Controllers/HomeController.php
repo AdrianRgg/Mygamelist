@@ -21,7 +21,7 @@ class HomeController extends Controller
             ->groupBy('game_igdb_id', 'game_name')
             ->having('review_count', '>=', 1)
             ->orderByDesc('avg_rating')
-            ->limit(15)
+            ->limit(20)
             ->get()
             ->map(function ($item) {
                 $cover = UserGame::where('game_igdb_id', $item->game_igdb_id)
@@ -41,7 +41,7 @@ class HomeController extends Controller
             ->selectRaw('COUNT(*) as total')
             ->groupBy('game_igdb_id', 'game_name', 'game_cover')
             ->orderByDesc('total')
-            ->limit(10)
+            ->limit(20)
             ->get();
 
         // 3 — Actividad de amigos
