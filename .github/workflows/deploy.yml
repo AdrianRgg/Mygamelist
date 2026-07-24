@@ -26,8 +26,8 @@ jobs:
       - name: Build Angular
         run: |
           cd frontend
-          npx ng build --configuration production --base-href /Mygamelist/
-
+          npx ng build --configuration production
+          
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
