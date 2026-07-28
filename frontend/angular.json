@@ -20,14 +20,16 @@
   "browser": "src/main.ts",
   "tsConfig": "tsconfig.app.json",
   "assets": [
-    {
-      "glob": "**/*",
-      "input": "public"
-    }
-  ],
-  "styles": [
-    "src/styles.css"
-  ],
+  {
+    "glob": "**/*",
+    "input": "public"
+  },
+  "src/404.html"
+],
+
+"styles": [
+  "src/styles.css"
+],
   "security": {
     "allowedHosts": []
   }
